@@ -1,5 +1,5 @@
 
-FROM eclipse-temurin:17-jdk-focal AS build
+FROM FROM eclipse-temurin:22-jdk-jammy AS build
 
 RUN apt-get update && apt-get install -y maven
 
@@ -17,7 +17,7 @@ COPY src ./src
 
 RUN ./mvnw package -DskipTests
 
-FROM eclipse-temurin:17-jre-focal
+FROM eclipse-temurin:22-jre-jammy
 
 WORKDIR /app
 
