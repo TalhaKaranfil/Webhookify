@@ -9,15 +9,22 @@ import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Formatter;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 @Service
 public class WebhookService {
 
-    private final List<Webhook> webhooks = new ArrayList<>();
+    private static final int MAX_WEBHOOKS = 25;
+    private final LinkedList<Webhook> webhooks = new LinkedList<>();
 
+
+    // remove oldest webhook if max is reached, FIFO
     public void processWebhook(Map<String, String> formValues) {
+        if (webhooks.size() >= MAX_WEBHOOKS) {
+            webhooks.removeFirst();
+        }
         Webhook webhook = new Webhook();
         webhook.setFormValues(formValues);
         webhook.setTimestamp(LocalDateTime.now());
@@ -26,7 +33,7 @@ public class WebhookService {
     }
 
     public List<Webhook> getWebhooks() {
-        return webhooks;
+        return new ArrayList<>(webhooks);
     }
 
     private String generateHash(String input) {
