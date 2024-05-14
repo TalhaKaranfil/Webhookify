@@ -1,5 +1,5 @@
 
-FROM FROM eclipse-temurin:22-jdk-jammy AS build
+FROM eclipse-temurin:22-jdk-jammy AS build
 
 RUN apt-get update && apt-get install -y maven
 
