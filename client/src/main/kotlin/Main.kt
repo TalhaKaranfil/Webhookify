@@ -6,7 +6,7 @@ import androidx.compose.ui.window.rememberWindowState
 import ui.theme.CustomTheme
 import view.MainScreen
 import viewmodel.MainViewModel
-
+import viewmodel.ConfigurationViewModel
 fun main() = application {
     val windowState = rememberWindowState(size = DpSize(1280.dp, 720.dp))
     Window(
@@ -15,9 +15,10 @@ fun main() = application {
         resizable = false,
         title = "Webhookify"
     ) {
-        val viewModel = MainViewModel()
+        val mainViewModel = MainViewModel()
+        val configurationViewModel = ConfigurationViewModel()
         CustomTheme {
-            MainScreen(viewModel)
+            MainScreen(mainViewModel, configurationViewModel)
         }
     }
 }

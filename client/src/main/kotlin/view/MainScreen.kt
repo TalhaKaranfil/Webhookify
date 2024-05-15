@@ -2,39 +2,38 @@ package view
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.onClick
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import ui.theme.CustomColorPalette
-import ui.theme.CustomTheme
-import ui.theme.CustomTypography
+import viewmodel.ConfigurationViewModel
 import viewmodel.MainViewModel
 
+enum class Screen {
+    MAIN, CONFIGURATION
+}
+
 @Composable
-fun MainScreen(viewModel: MainViewModel) {
+fun MainScreen(mainViewModel: MainViewModel, configurationViewModel: ConfigurationViewModel) {
+    var currentScreen by remember { mutableStateOf(Screen.MAIN) }
     Column(modifier = Modifier.fillMaxSize()) {
         TopBar()
         Row(modifier = Modifier.fillMaxSize()) {
-            NavigationSidebar()
+            NavigationSidebar(onScreenChange = { screen -> currentScreen = screen })
             Scaffold(
                 modifier = Modifier.fillMaxSize(),
                 content = { paddingValues ->
                     Column(modifier = Modifier.padding(paddingValues)) {
-                        Button(onClick = {
-                            viewModel.updateText()
-                        }) {
-                            Text(viewModel.text)
+                        when (currentScreen) {
+                            Screen.MAIN -> MainContent(mainViewModel)
+                            Screen.CONFIGURATION -> ConfigurationScreen(configurationViewModel)
                         }
-                        // TODO: other content views
                     }
                 }
             )
@@ -42,54 +41,40 @@ fun MainScreen(viewModel: MainViewModel) {
     }
 }
 
-@Preview
+
 @Composable
-fun NavigationSidebar() {
+fun MainContent(viewModel: MainViewModel) {
+    Button(onClick = {
+        viewModel.updateText()
+    }) {
+        Text(viewModel.text, style = MaterialTheme.typography.button)
+    }
+    // TODO: other content views
+}
+
+@Composable
+fun NavigationSidebar(onScreenChange: (Screen) -> Unit) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier
             .width(300.dp)
             .fillMaxSize()
-            .background(MaterialTheme.colors.secondary)
+            .background(CustomColorPalette.secondary)
     ) {
-
-        // TODO: navigation items
-        Button( onClick = { /*TODO*/ },
+        Button(onClick = { onScreenChange(Screen.MAIN) },
             modifier = Modifier
                 .size(width = 250.dp, height = 100.dp)
         ) {
-            Text("Navigation Item")
+            Text("Main Screen", style = MaterialTheme.typography.button)
         }
-        // --------------------------------
-        Button( onClick = { /*TODO*/ },
+        Button(onClick = { onScreenChange(Screen.CONFIGURATION) },
             modifier = Modifier
                 .size(width = 250.dp, height = 100.dp)
         ) {
-            Text("Navigation Item")
+            Text("Configuration", style = MaterialTheme.typography.button)
         }
-        // --------------------------------
-        Button( onClick = { /*TODO*/ },
-            modifier = Modifier
-                .size(width = 250.dp, height = 100.dp)
-        ) {
-            Text("Navigation Item")
-        }
-        // --------------------------------
-        Button( onClick = { /*TODO*/ },
-            modifier = Modifier
-                .size(width = 250.dp, height = 100.dp)
-        ) {
-            Text("Navigation Item")
-        }
-        // --------------------------------
-        Button( onClick = { /*TODO*/ },
-            modifier = Modifier
-                .size(width = 250.dp, height = 100.dp)
-        ) {
-                Text("Configuration")
-        }
-        // --------------------------------
+        // TODO: add more later
     }
 }
 
@@ -99,20 +84,12 @@ fun TopBar() {
         modifier = Modifier
             .fillMaxWidth()
             .height(56.dp)
-            .background(CustomColorPalette.secondary)
+            .background(CustomColorPalette.secondary) // Apply custom secondary color as background
     ) {
         Text(
-            text = "Webhookify",
-            style = CustomTypography.h1,
-            color = Color(0xFF04d63a),
-            modifier = Modifier.align(Alignment.CenterStart).padding(start = 25.dp)
-        )
-
-
-        Text(
             text = "Top Bar",
-            style = CustomTypography.h1,
             color = CustomColorPalette.onSecondary,
+            style = MaterialTheme.typography.h1,
             modifier = Modifier.align(Alignment.Center)
         )
     }
