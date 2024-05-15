@@ -17,12 +17,12 @@ import androidx.compose.ui.unit.sp
 val CustomColorPalette = lightColors(
     primary = Color(0xFF555555),
     primaryVariant = Color(0xFF949494),
-    secondary = Color(0xFF03DAC6),
+    secondary = Color(0xFF313131),
     background = Color(0xFF1A1B1C),
     surface = Color.White,
     onPrimary = Color.White,
-    onSecondary = Color.Black,
-    onBackground = Color.Black,
+    onSecondary = Color.White,
+    onBackground = Color.White,
     onSurface = Color.Black,
 )
 
@@ -31,6 +31,11 @@ val CustomTypography = Typography(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp
+    ),
+    h1 = TextStyle(
+        fontFamily = FontFamily.Monospace,
+        fontWeight = FontWeight.Normal,
+        fontSize = 20.sp
     ),
     // TODO: other text styles
 )
