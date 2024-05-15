@@ -87,7 +87,7 @@ fun NavigationSidebar() {
             modifier = Modifier
                 .size(width = 250.dp, height = 100.dp)
         ) {
-            Text("Navigation Item")
+                Text("Configuration")
         }
         // --------------------------------
     }
@@ -101,6 +101,14 @@ fun TopBar() {
             .height(56.dp)
             .background(CustomColorPalette.secondary)
     ) {
+        Text(
+            text = "Webhookify",
+            style = CustomTypography.h1,
+            color = Color(0xFF04d63a),
+            modifier = Modifier.align(Alignment.CenterStart).padding(start = 25.dp)
+        )
+
+
         Text(
             text = "Top Bar",
             style = CustomTypography.h1,
