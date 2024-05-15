@@ -7,6 +7,8 @@ import ui.theme.CustomTheme
 import view.MainScreen
 import viewmodel.MainViewModel
 import viewmodel.ConfigurationViewModel
+import viewmodel.InboxViewModel
+
 fun main() = application {
     val windowState = rememberWindowState(size = DpSize(1280.dp, 720.dp))
     Window(
@@ -17,8 +19,9 @@ fun main() = application {
     ) {
         val mainViewModel = MainViewModel()
         val configurationViewModel = ConfigurationViewModel()
+        val inboxViewModel = InboxViewModel()
         CustomTheme {
-            MainScreen(mainViewModel, configurationViewModel)
+            MainScreen(mainViewModel, configurationViewModel, inboxViewModel)
         }
     }
 }

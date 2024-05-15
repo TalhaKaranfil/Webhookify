@@ -18,14 +18,17 @@ import androidx.compose.ui.unit.dp
 import ui.theme.CustomColorPalette
 import ui.theme.CustomTypography
 import viewmodel.ConfigurationViewModel
+import viewmodel.InboxViewModel
 import viewmodel.MainViewModel
 
 enum class Screen {
-    MAIN, CONFIGURATION
+    MAIN, CONFIGURATION, INBOX
 }
 
 @Composable
-fun MainScreen(mainViewModel: MainViewModel, configurationViewModel: ConfigurationViewModel) {
+fun MainScreen(mainViewModel: MainViewModel,
+               configurationViewModel: ConfigurationViewModel,
+               inboxViewModel: InboxViewModel) {
     var currentScreen by remember { mutableStateOf(Screen.MAIN) }
     Column(modifier = Modifier.fillMaxSize()) {
         TopBar(currentScreen)
@@ -38,6 +41,7 @@ fun MainScreen(mainViewModel: MainViewModel, configurationViewModel: Configurati
                         when (currentScreen) {
                             Screen.MAIN -> MainContent(mainViewModel)
                             Screen.CONFIGURATION -> ConfigurationScreen(configurationViewModel)
+                            Screen.INBOX -> InboxScreen(inboxViewModel)
                         }
                     }
                 }
@@ -75,6 +79,17 @@ fun NavigationSidebar(currentScreen: Screen, onScreenChange: (Screen) -> Unit) {
         ) {
             Text("Main", style = MaterialTheme.typography.button)
         }
+
+        Button(
+            onClick = { onScreenChange(Screen.INBOX) },
+            shape = RoundedCornerShape(15.dp),
+            modifier = Modifier
+                .size(width = 250.dp, height = 100.dp)
+                .border(1.dp, if (currentScreen == Screen.INBOX) Color(0xFFFF04d63a) else Color.Transparent, shape = RoundedCornerShape(15.dp))
+        ) {
+            Text("Inbox", style = MaterialTheme.typography.button)
+        }
+
         Button(
             onClick = { onScreenChange(Screen.CONFIGURATION) },
             shape = RoundedCornerShape(15.dp),
@@ -107,6 +122,7 @@ fun TopBar(currentScreen: Screen) {
             text = when (currentScreen) {
                 Screen.MAIN -> "Main"
                 Screen.CONFIGURATION -> "Configuration"
+                Screen.INBOX -> "Inbox"
             },
             color = CustomColorPalette.onSecondary,
             style = MaterialTheme.typography.h1,

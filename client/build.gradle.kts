@@ -20,6 +20,14 @@ dependencies {
     // (in a separate module for demo project and in testMain).
     // With compose.desktop.common you will also lose @Preview functionality
     implementation(compose.desktop.currentOs)
+    implementation(kotlin("stdlib"))
+    implementation("org.jetbrains.compose.ui:ui:0.5.0-build225")
+    implementation("org.jetbrains.compose.foundation:foundation:0.5.0-build225")
+    implementation("org.jetbrains.compose.material:material:0.5.0-build225")
+    implementation("org.jetbrains.compose.desktop:desktop:0.5.0-build225")
+    implementation("com.google.code.gson:gson:2.8.9")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.7.3")
 }
 
 compose.desktop {
