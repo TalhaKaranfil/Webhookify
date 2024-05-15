@@ -10,8 +10,10 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import ui.theme.CustomColorPalette
+import ui.theme.CustomTypography
 import viewmodel.ConfigurationViewModel
 import viewmodel.MainViewModel
 
@@ -61,12 +63,13 @@ fun NavigationSidebar(onScreenChange: (Screen) -> Unit) {
             .width(300.dp)
             .fillMaxSize()
             .background(CustomColorPalette.secondary)
+        
     ) {
         Button(onClick = { onScreenChange(Screen.MAIN) },
             modifier = Modifier
                 .size(width = 250.dp, height = 100.dp)
         ) {
-            Text("Main Screen", style = MaterialTheme.typography.button)
+            Text("Main", style = MaterialTheme.typography.button)
         }
         Button(onClick = { onScreenChange(Screen.CONFIGURATION) },
             modifier = Modifier
@@ -86,6 +89,15 @@ fun TopBar() {
             .height(56.dp)
             .background(CustomColorPalette.secondary) // Apply custom secondary color as background
     ) {
+
+        Text(
+            text = "Webhookify",
+            style = CustomTypography.h1,
+            color = Color(0xFF04d63a),
+            modifier = Modifier.align(Alignment.CenterStart).padding(start = 25.dp)
+        )
+
+
         Text(
             text = "Top Bar",
             color = CustomColorPalette.onSecondary,
