@@ -1,8 +1,11 @@
 package view
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
@@ -25,9 +28,9 @@ enum class Screen {
 fun MainScreen(mainViewModel: MainViewModel, configurationViewModel: ConfigurationViewModel) {
     var currentScreen by remember { mutableStateOf(Screen.MAIN) }
     Column(modifier = Modifier.fillMaxSize()) {
-        TopBar()
+        TopBar(currentScreen)
         Row(modifier = Modifier.fillMaxSize()) {
-            NavigationSidebar(onScreenChange = { screen -> currentScreen = screen })
+            NavigationSidebar(currentScreen, onScreenChange = { screen -> currentScreen = screen })
             Scaffold(
                 modifier = Modifier.fillMaxSize(),
                 content = { paddingValues ->
@@ -43,7 +46,6 @@ fun MainScreen(mainViewModel: MainViewModel, configurationViewModel: Configurati
     }
 }
 
-
 @Composable
 fun MainContent(viewModel: MainViewModel) {
     Button(onClick = {
@@ -55,7 +57,7 @@ fun MainContent(viewModel: MainViewModel) {
 }
 
 @Composable
-fun NavigationSidebar(onScreenChange: (Screen) -> Unit) {
+fun NavigationSidebar(currentScreen: Screen, onScreenChange: (Screen) -> Unit) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceEvenly,
@@ -63,17 +65,22 @@ fun NavigationSidebar(onScreenChange: (Screen) -> Unit) {
             .width(300.dp)
             .fillMaxSize()
             .background(CustomColorPalette.secondary)
-        
     ) {
-        Button(onClick = { onScreenChange(Screen.MAIN) },
+        Button(
+            onClick = { onScreenChange(Screen.MAIN) },
+            shape = RoundedCornerShape(15.dp),
             modifier = Modifier
                 .size(width = 250.dp, height = 100.dp)
+                .border(1.dp, if (currentScreen == Screen.MAIN) Color(0xFFFF04d63a) else Color.Transparent, shape = RoundedCornerShape(15.dp))
         ) {
             Text("Main", style = MaterialTheme.typography.button)
         }
-        Button(onClick = { onScreenChange(Screen.CONFIGURATION) },
+        Button(
+            onClick = { onScreenChange(Screen.CONFIGURATION) },
+            shape = RoundedCornerShape(15.dp),
             modifier = Modifier
                 .size(width = 250.dp, height = 100.dp)
+                .border(1.dp, if (currentScreen == Screen.CONFIGURATION) Color(0xFFFF04d63a) else Color.Transparent, shape = RoundedCornerShape(15.dp))
         ) {
             Text("Configuration", style = MaterialTheme.typography.button)
         }
@@ -82,14 +89,13 @@ fun NavigationSidebar(onScreenChange: (Screen) -> Unit) {
 }
 
 @Composable
-fun TopBar() {
+fun TopBar(currentScreen: Screen) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(56.dp)
-            .background(CustomColorPalette.secondary) // Apply custom secondary color as background
+            .background(CustomColorPalette.secondary)
     ) {
-
         Text(
             text = "Webhookify",
             style = CustomTypography.h1,
@@ -97,9 +103,11 @@ fun TopBar() {
             modifier = Modifier.align(Alignment.CenterStart).padding(start = 25.dp)
         )
 
-
         Text(
-            text = "Top Bar",
+            text = when (currentScreen) {
+                Screen.MAIN -> "Main"
+                Screen.CONFIGURATION -> "Configuration"
+            },
             color = CustomColorPalette.onSecondary,
             style = MaterialTheme.typography.h1,
             modifier = Modifier.align(Alignment.Center)
