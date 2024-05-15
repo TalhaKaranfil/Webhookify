@@ -7,7 +7,7 @@ import java.io.File
 
 class ConfigurationViewModel {
 
-    var url by mutableStateOf("")
+    var getWebhooksUrl by mutableStateOf("")
         private set
 
     var message by mutableStateOf("")
@@ -21,9 +21,9 @@ class ConfigurationViewModel {
     }
 
     fun updateURL(newURL: String) {
-        url = newURL
-        println("URL updated to $url")
-        saveUrlToFile(url)
+        getWebhooksUrl = newURL
+        println("getWebhooksUrl updated to $getWebhooksUrl")
+        saveUrlToFile(getWebhooksUrl)
     }
 
     private fun saveUrlToFile(url: String) {
@@ -35,7 +35,7 @@ class ConfigurationViewModel {
             }
             // create a file in the documents directory
             val configFile = File(documentsDir, "webhookify.config")
-            configFile.writeText("url=$url")
+            configFile.writeText("getWebhooksUrl=$url")
             println("URL saved to ${configFile.absolutePath}")
             message = "URL saved successfully to ${configFile.absolutePath}"
             messageColor = 0xFF04d63a // Green
@@ -55,10 +55,10 @@ class ConfigurationViewModel {
                 // if the file exists, read the URL from it
                 val configLines = configFile.readLines()
                 for (line in configLines) {
-                    if (line.startsWith("url=")) {
+                    if (line.startsWith("getWebhooksUrl=")) {
                         // extract the URL from the line and display it
-                        url = line.substringAfter("url=")
-                        println("URL loaded from file: $url")
+                        getWebhooksUrl = line.substringAfter("getWebhooksUrl=")
+                        println("getWebhooksUrl loaded from file: $getWebhooksUrl")
                         break
                     }
                 }

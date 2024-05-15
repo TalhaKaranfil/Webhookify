@@ -31,7 +31,7 @@ fun ConfigurationScreen(viewModel: ConfigurationViewModel) {
 
 @Composable
 fun URLInput(viewModel: ConfigurationViewModel) {
-    var text by remember { mutableStateOf(viewModel.url) }
+    var text by remember { mutableStateOf(viewModel.getWebhooksUrl) }
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -41,7 +41,7 @@ fun URLInput(viewModel: ConfigurationViewModel) {
         OutlinedTextField(
             value = text,
             onValueChange = { text = it },
-            label = { Text("URL") },
+            label = { Text("getWebhooks URL") },
             singleLine = true,
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 focusedBorderColor = Color(0xFF04d63a),
