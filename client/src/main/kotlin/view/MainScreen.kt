@@ -6,10 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -52,14 +49,27 @@ fun MainScreen(mainViewModel: MainViewModel,
 
 @Composable
 fun MainContent(viewModel: MainViewModel) {
-    Button(onClick = {
-        viewModel.updateText()
-    }) {
-        Text(viewModel.text, style = MaterialTheme.typography.button)
-    }
-    // TODO: other content views
-}
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = "Welcome to Webhookify!",
+            style = MaterialTheme.typography.h4,
+            color = CustomColorPalette.primary
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = "This application allows you to manage and view webhooks.",
+            style = MaterialTheme.typography.body1,
+            color = Color(0xFF3b3b3b)
+        )
 
+    }
+}
 @Composable
 fun NavigationSidebar(currentScreen: Screen, onScreenChange: (Screen) -> Unit) {
     Column(
