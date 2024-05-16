@@ -24,12 +24,19 @@ class InboxViewModel {
     init {
         importWebhooksFromFile()
         fetchMessages()
-
     }
+
+    private val logFile = File(System.getProperty("user.home"), "Documents/webhookify/log.txt")
+
+    private fun log(message: String) {
+        logFile.appendText("$message\n")
+    }
+
 
     private fun saveWebhooksToFile(webhooks: List<WebhookMessage>) {
         try {
             val documentsDir = File(System.getProperty("user.home"), "Documents/webhookify")
+            log("Documents Directory: ${documentsDir.absolutePath}")
             if (!documentsDir.exists()) {
                 documentsDir.mkdirs()
             }
@@ -55,8 +62,10 @@ class InboxViewModel {
             val allWebhooks = existingWebhooks + uniqueWebhooks
             val json = Gson().toJson(allWebhooks)
             webhooksFile.writeText(json)
+            log("Webhooks File: ${webhooksFile.absolutePath}")
         } catch (e: Exception) {
             println("Error saving webhooks to file: ${e.message}")
+            log("Error saving webhooks to file: ${e.message}")
         }
     }
 
@@ -80,12 +89,14 @@ class InboxViewModel {
             val url = URL(getWebhookURL())
             val connection = url.openConnection() as HttpURLConnection
             connection.requestMethod = "GET"
+            log("GET: ${url.path}")
 
             try {
                 // Read the response from the server and parse it into a list of WebhookMessage objects
                 val response = connection.inputStream.bufferedReader().use { it.readText() }
                 val messageType = object : TypeToken<List<WebhookMessage>>() {}.type
                 val fetchedMessages: List<WebhookMessage> = Gson().fromJson(response, messageType)
+                log("Response received. ${fetchedMessages.size} messages.")
 
                 withContext(Dispatchers.Main) {
                     val newMessages = fetchedMessages.filter { newWebhook ->
@@ -98,11 +109,14 @@ class InboxViewModel {
                     }
                     saveWebhooksToFile(fetchedMessages)
                     importWebhooksFromFile()
+                    log("Messages: $messages")
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
+                log("Error fetching messages: ${e.message}")
             } finally {
                 connection.disconnect()
+                log("Connection closed")
             }
         }
     }
@@ -112,7 +126,9 @@ class InboxViewModel {
         try {
             // Get the user's config file
             val documentsDir = File(System.getProperty("user.home"), "Documents/webhookify")
+            log("Documents Directory: ${documentsDir.absolutePath}")
             val configFile = File(documentsDir, "webhookify.config")
+            log("Config File: ${configFile.absolutePath}")
             if (configFile.exists()) {
                 // If the file exists, read the URL from it
                 val configLines = configFile.readLines()
@@ -126,6 +142,7 @@ class InboxViewModel {
             }
         } catch (e: Exception) {
             println("Error loading URL from file: ${e.message}")
+            log("Error loading URL from file: ${e.message}")
         }
         return webhookUrl
     }
@@ -141,8 +158,10 @@ class InboxViewModel {
                 val importedWebhooks = Gson().fromJson<List<WebhookMessage>>(fileContent, messageType)
 
                 messages = importedWebhooks
+                log("Webhooks imported from file.")
             } else {
                 println("Webhooks file not found.")
+                log("Webhooks file not found.")
             }
         } catch (e: Exception) {
             println("Error importing webhooks from file: ${e.message}")

@@ -1,9 +1,11 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm")
     id("org.jetbrains.compose")
 }
+
 
 group = "com.webhookify.client"
 version = "1.0-SNAPSHOT"
@@ -28,6 +30,18 @@ dependencies {
     implementation("com.google.code.gson:gson:2.10")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1-Beta")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.8.1-Beta")
+}
+
+kotlin {
+    jvmToolchain {
+        (this as JavaToolchainSpec).languageVersion.set(JavaLanguageVersion.of(21))
+    }
+}
+
+tasks.withType<KotlinCompile> {
+    kotlinOptions {
+        jvmTarget = "21"
+    }
 }
 
 compose.desktop {
