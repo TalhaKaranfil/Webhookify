@@ -3,16 +3,19 @@ package viewmodel
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import model.WebhookMessage
+import java.awt.SystemTray
+import java.awt.Toolkit
+import java.awt.TrayIcon
+import java.io.File
 import java.net.HttpURLConnection
 import java.net.URL
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import java.io.File
 
 class InboxViewModel {
     var messages by mutableStateOf(listOf<WebhookMessage>())
@@ -57,6 +60,20 @@ class InboxViewModel {
         }
     }
 
+    private fun sendNotification(message: String) {
+        if (SystemTray.isSupported()) {
+            val tray = SystemTray.getSystemTray()
+            val image = Toolkit.getDefaultToolkit().createImage("icon.png")
+            val trayIcon = TrayIcon(image, "Webhookify")
+            trayIcon.isImageAutoSize = true
+            trayIcon.toolTip = "Webhookify Notification"
+            tray.add(trayIcon)
+            trayIcon.displayMessage("Webhookify", message, TrayIcon.MessageType.INFO)
+        } else {
+            println("System tray not supported!")
+        }
+    }
+
     // Fetches messages from the webhookify server
     fun fetchMessages() {
         CoroutineScope(Dispatchers.IO).launch {
@@ -71,6 +88,14 @@ class InboxViewModel {
                 val fetchedMessages: List<WebhookMessage> = Gson().fromJson(response, messageType)
 
                 withContext(Dispatchers.Main) {
+                    val newMessages = fetchedMessages.filter { newWebhook ->
+                        messages.none { existingWebhook ->
+                            existingWebhook.timestamp == newWebhook.timestamp && existingWebhook.hash == newWebhook.hash
+                        }
+                    }
+                    if (newMessages.isNotEmpty()) {
+                        sendNotification("New webhooks received!")
+                    }
                     saveWebhooksToFile(fetchedMessages)
                     importWebhooksFromFile()
                 }
@@ -106,21 +131,21 @@ class InboxViewModel {
     }
 
     fun importWebhooksFromFile() {
-    try {
-        val documentsDir = File(System.getProperty("user.home"), "Documents/webhookify")
-        val webhooksFile = File(documentsDir, "webhooks.json")
+        try {
+            val documentsDir = File(System.getProperty("user.home"), "Documents/webhookify")
+            val webhooksFile = File(documentsDir, "webhooks.json")
 
-        if (webhooksFile.exists()) {
-            val fileContent = webhooksFile.readText()
-            val messageType = object : TypeToken<List<WebhookMessage>>() {}.type
-            val importedWebhooks = Gson().fromJson<List<WebhookMessage>>(fileContent, messageType)
+            if (webhooksFile.exists()) {
+                val fileContent = webhooksFile.readText()
+                val messageType = object : TypeToken<List<WebhookMessage>>() {}.type
+                val importedWebhooks = Gson().fromJson<List<WebhookMessage>>(fileContent, messageType)
 
-            messages = importedWebhooks
-        } else {
-            println("Webhooks file not found.")
+                messages = importedWebhooks
+            } else {
+                println("Webhooks file not found.")
+            }
+        } catch (e: Exception) {
+            println("Error importing webhooks from file: ${e.message}")
         }
-    } catch (e: Exception) {
-        println("Error importing webhooks from file: ${e.message}")
     }
-}
 }
