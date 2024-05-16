@@ -12,6 +12,7 @@ import java.net.HttpURLConnection
 import java.net.URL
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import java.io.File
 
 class InboxViewModel {
     var messages by mutableStateOf(listOf<WebhookMessage>())
@@ -24,7 +25,7 @@ class InboxViewModel {
     // Fetches messages from the webhookify server
     fun fetchMessages() {
         CoroutineScope(Dispatchers.IO).launch {
-            val url = URL("https://webhookify.onrender.com/api/webhooks")
+            val url = URL(getWebhookURL())
             val connection = url.openConnection() as HttpURLConnection
             connection.requestMethod = "GET"
 
@@ -43,5 +44,28 @@ class InboxViewModel {
                 connection.disconnect()
             }
         }
+    }
+
+    fun getWebhookURL(): String {
+        var webhookUrl = ""
+        try {
+            // Get the user's config file
+            val documentsDir = File(System.getProperty("user.home"), "Documents/webhookify")
+            val configFile = File(documentsDir, "webhookify.config")
+            if (configFile.exists()) {
+                // If the file exists, read the URL from it
+                val configLines = configFile.readLines()
+                for (line in configLines) {
+                    if (line.startsWith("getWebhooksUrl=")) {
+                        // Extract the URL from the line
+                        webhookUrl = line.substringAfter("getWebhooksUrl=")
+                        break
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            println("Error loading URL from file: ${e.message}")
+        }
+        return webhookUrl
     }
 }
