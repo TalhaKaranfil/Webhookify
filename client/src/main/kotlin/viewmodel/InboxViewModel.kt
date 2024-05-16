@@ -22,7 +22,7 @@ class InboxViewModel {
     }
 
     // Fetches messages from the webhookify server
-    private fun fetchMessages() {
+    fun fetchMessages() {
         CoroutineScope(Dispatchers.IO).launch {
             val url = URL("https://webhookify.onrender.com/api/webhooks")
             val connection = url.openConnection() as HttpURLConnection
