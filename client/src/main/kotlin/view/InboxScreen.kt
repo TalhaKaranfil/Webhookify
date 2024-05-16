@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
 import ui.theme.CustomColorPalette
+import ui.theme.CustomTypography
 import viewmodel.InboxViewModel
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -64,7 +65,7 @@ fun InboxScreen(viewModel: InboxViewModel) {
                             message.formValues.forEach { (key, value) ->
                                 Row {
                                     Text(
-                                        text = "$key: ", color = Color(0xFF04d63a),
+                                        text = "$key: ", color = Color(0xFF04d63a), fontFamily = CustomTypography.h1.fontFamily,
                                         modifier = Modifier.background(
                                             CustomColorPalette.secondary,
                                             shape = RoundedCornerShape(20)
@@ -94,6 +95,7 @@ fun InboxScreen(viewModel: InboxViewModel) {
                             Text(
                                 text = message.hash,
                                 color = Color(0xFF04d63a),
+                                fontFamily = CustomTypography.h1.fontFamily,
                             )
                         }
                     }
